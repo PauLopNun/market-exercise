@@ -2,10 +2,11 @@ package com.sts.client.service;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Scanner;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.junit.jupiter.api.Assertions.*;
+public class UserInterfaceTest {
+    @Test
+    void testValidInput(){
 
-class UserInterfaceTest {
-
+    }
 }

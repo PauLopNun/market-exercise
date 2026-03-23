@@ -1,0 +1,6 @@
+com\sts\market\MarketServiceTest.class
+com\sts\market\MarketStockRepositoryTest.class
+com\sts\MainTest.class
+com\sts\market\CartRepositoryTest.class
+com\sts\market\ProductTest.class
+com\sts\market\CartEntryTest.class

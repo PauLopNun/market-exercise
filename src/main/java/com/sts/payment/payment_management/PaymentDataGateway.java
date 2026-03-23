@@ -1,15 +1,15 @@
 package com.sts.payment.payment_management;
 
-import com.sts.payment.User;
-import com.sts.payment.CartEntry;
-import com.sts.payment.Product;
+import com.sts.payment.data_access.CartItem;
+import com.sts.payment.data_access.User;
+import com.sts.shared.model.Product;
 
 import java.util.List;
 
 public interface PaymentDataGateway {
 
     User getUserById(String id);
-    List<CartEntry> getCartByUserId(String userId);
+    List<CartItem> getCartByUserId(String userId);
     Product getProductById(String productId);
     void removeLastItemFromCart(String userId);
     void incrementProductStock(String productId, int quantity);

@@ -50,7 +50,6 @@ public class User {
 
     }
 
-    //Ni idea
     @Override
     public int hashCode() {
         return id.hashCode();

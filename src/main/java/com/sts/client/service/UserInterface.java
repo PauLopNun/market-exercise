@@ -2,8 +2,6 @@ package com.sts.client.service;
 
 import com.sts.shared.model.User;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class UserInterface {
@@ -54,6 +52,9 @@ public class UserInterface {
 
     private static void printMenu(User activeUser) {
         System.out.println("WELCOME TO MERCADONA, "+ activeUser.getName().toUpperCase() +", enter the number of the function you want to execute");
+
+        printUserData(activeUser);
+
         System.out.println(SEPARATOR);
         System.out.println("1. LOGIN");
         System.out.println("2. BUY");
@@ -63,6 +64,11 @@ public class UserInterface {
         System.out.println("6. EXIT");
         System.out.println(SEPARATOR);
         System.out.print(">");
+    }
+
+    private static void printUserData(User activeUser){
+        System.out.println("Current cart:");
+
     }
 
     public static String getIdentifierByConsole(Scanner sc) {

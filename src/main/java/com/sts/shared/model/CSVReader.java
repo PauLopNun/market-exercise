@@ -4,11 +4,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class CSVReader {
-    public static User getUser(String id) {
+    public static User getUser(String id) throws UserNotFoundException {
 
         List<String[]> csvUserList = getData("./data/users.csv", ",");
         for(String[] userLine : csvUserList){
@@ -21,7 +20,8 @@ public class CSVReader {
                 return new User( idUser, nameUser, budget_user);
             }
         }
-        return new User( "N/A", "N/A", 0);
+        throw new UserNotFoundException(id);
+        //return new User( "N/A", "N/A", 0.0);
     }
 
     public static List<String[]> getData(String csvFile, String delimiter) {

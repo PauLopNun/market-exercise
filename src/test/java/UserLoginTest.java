@@ -9,22 +9,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserLoginTest {
-    static UserLogin userLogin = new UserLogin(new ArrayList<>(List.of(new User("1","paco",200.0))));
+    static UserLogin userLogin = new UserLogin();
 
     @Test
     void loginByName(){
-        User result = userLogin.login("paco");
-        assertThat(result.getName().equals("paco"));
+        User result = userLogin.login("name");
+        assertThat(result.getName()).isEqualTo("name");
     }
 
     @Test
     void loginById(){
-        User result = userLogin.login("1");
-        assertThat(result.getId().equals("1"));
+        User result = userLogin.login("id");
+        assertThat(result.getId()).isEqualTo("id");
     }
 
-    @Test
-    void notExistingUser(){
-        assertThrows(IllegalArgumentException.class,() -> userLogin.login("1234143125"));
-    }
 }

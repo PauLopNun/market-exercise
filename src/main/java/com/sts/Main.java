@@ -1,10 +1,10 @@
 package com.sts;
 
-import com.sts.shared.model.CSVReader;
+import com.sts.client.service.UserInterface;
 
 public class Main {
     public static void main(String[] args) {
-        CSVReader csvReader = new CSVReader();
-        csvReader.getData("./data/", ",");
+        System.out.println("StS - Simple Terminal Supermarket");
+        UserInterface.startInterface();
     }
 }

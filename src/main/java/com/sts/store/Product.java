@@ -16,6 +16,6 @@ public class Product {
 
     @Override
     public String toString() {
-        return String.format("%d;%s;%.2f;%d;%d", id, name, price, currentStock, maxCapacity);
+        return String.format("%d,%s,%.2f,%d,%d", id, name, price, currentStock, maxCapacity);
     }
 }

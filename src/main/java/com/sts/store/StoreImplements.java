@@ -20,6 +20,7 @@ public class StoreImplements implements Store {
     }
 
     public boolean replenishLowStockProducts(List<Product> marketProducts, List<WarehouseProduct> warehouseProducts) {
+        boolean modified = false;
         for (final Product marketItem : marketProducts) {
             final double productPercentageToRefill = (double) marketItem.getCurrentStock() / marketItem.getMaxCapacity();
             double PERCENTAGE_REFILL = 0.2;
@@ -32,14 +33,14 @@ public class StoreImplements implements Store {
                         if (toTransfer > 0) {
                             marketItem.setCurrentStock(marketItem.getCurrentStock() + toTransfer);
                             warehouseItem.setTotalStock(warehouseItem.getTotalStock() - toTransfer);
-                            return true;
+                            modified = true;
                         }
                     }
                 }
             }
         }
 
-        return false;
+        return modified;
     }
 
     public List<Product> getProductsFromCSV() {
@@ -47,12 +48,15 @@ public class StoreImplements implements Store {
         try (final BufferedReader reader = new BufferedReader(new FileReader("data/market_stock.csv"))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                final String[] parts = line.split(";");
-                String priceString = parts[2].replace(",", ".");
+                final String[] parts = line.split(",");
+                // Price format is like "1.500000" (dot as thousands separator, no decimals)
+                // or "1.000000" — remove dots used as thousands separators and parse as integer/double
+                String priceString = parts[2].replace(".", "");
+                double price = Double.parseDouble(priceString);
                 productList.add(Product.builder()
                         .id(Integer.parseInt(parts[0]))
                         .name(parts[1])
-                        .price(Double.parseDouble(priceString))
+                        .price(price)
                         .currentStock(Integer.parseInt(parts[3]))
                         .maxCapacity(Integer.parseInt(parts[4]))
                         .build()
@@ -70,11 +74,11 @@ public class StoreImplements implements Store {
         try (final BufferedReader reader = new BufferedReader(new FileReader("data/warehouse.csv"))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                final String[] parts = line.split(";");
+                final String[] parts = line.split(",");
                 productList.add(WarehouseProduct.builder()
                         .id(Integer.parseInt(parts[0]))
-                        .name(parts[0])
-                        .totalStock(Integer.parseInt(parts[0]))
+                        .name(parts[1])
+                        .totalStock(Integer.parseInt(parts[2]))
                         .build()
                 );
             }
@@ -89,6 +93,7 @@ public class StoreImplements implements Store {
         try (final BufferedWriter writer = new BufferedWriter(new FileWriter("data/warehouse.csv"))) {
             for (final WarehouseProduct warehouseProduct : warehouseProductList) {
                 writer.write(warehouseProduct.toString());
+                writer.newLine();
                 writer.flush();
             }
         } catch (Exception e) {

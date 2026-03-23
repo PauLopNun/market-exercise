@@ -14,6 +14,6 @@ public class WarehouseProduct {
 
     @Override
     public String toString() {
-        return String.format("%d;%s;%d", id, name, totalStock);
+        return String.format("%d,%s,%d", id, name, totalStock);
     }
 }

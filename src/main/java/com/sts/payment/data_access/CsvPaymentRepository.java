@@ -93,26 +93,30 @@ public class CsvPaymentRepository implements PaymentDataGateway {
     }
     @Override
     public void updateBalance(String userId, double newBudget) {
-
         Path path = Path.of(this.usersFile);
+        int attempts = 0;
+        boolean success = false;
 
-        try {
-            List<String> lines = Files.readAllLines(path);
-
-            for (int i = 0; i < lines.size(); i++) {
-
-                String[] parts = lines.get(i).split(",");
-
-                if (parts[0].equals(userId)) {
-                    lines.set(i, parts[0] + "," + parts[1] + "," + newBudget);
-                    break;
+        while (attempts < 3 && !success) {
+            try {
+                List<String> lines = Files.readAllLines(path);
+                for (int i = 0; i < lines.size(); i++) {
+                    String[] parts = lines.get(i).split(",");
+                    if (parts[0].equals(userId)) {
+                        lines.set(i, parts[0] + "," + parts[1] + "," + newBudget);
+                        break;
+                    }
+                }
+                Files.write(path, lines);
+                success = true;
+            } catch (IOException e) {
+                attempts++;
+                if (attempts >= 3) {
+                    System.err.println("Error crítico tras 3 intentos: " + e.getMessage());
+                } else {
+                    try { Thread.sleep(100); } catch (InterruptedException ignored) {}
                 }
             }
-
-            Files.write(path, lines);
-
-        } catch (IOException e) {
-            System.err.println("Error actualizando balance: " + e.getMessage());
         }
     }
 

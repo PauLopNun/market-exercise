@@ -5,16 +5,21 @@ import java.io.PrintWriter;
 import java.time.LocalDateTime;
 
 public class AuditorWriterCsv {
-    private static final String FILE_PATH = "data/audit_log.csv";
 
-    public static void log(EventType type, String message) {
-        try (PrintWriter out = new PrintWriter(new FileWriter(FILE_PATH, true))) {
+
+    private final String filePath;
+
+    public AuditorWriterCsv(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public void log(String module, EventType action, String status, String details) {
+        try (PrintWriter out = new PrintWriter(new FileWriter(filePath, true))) {
             String timestamp = LocalDateTime.now().toString();
-            out.printf("%s, %s, %s%n", timestamp, type, message);
+
+            out.printf("%s,%s,%s,%s,%s%n", timestamp, module, action.name(), status, details);
         } catch (Exception e) {
             System.err.println("Error al escribir log: " + e.getMessage());
         }
     }
-
 }
-

@@ -16,5 +16,7 @@ public class PaymentAuditor {
         }
     }
 
+    public PaymentAuditor() {
+    }
 }
 

@@ -3,16 +3,18 @@ package com.sts.client.service;
 import com.sts.market.repository.CartRepository;
 import com.sts.market.repository.MarketStockRepository;
 import com.sts.market.service.MarketService;
-import com.sts.shared.audit.AuditLogger;
-import com.sts.shared.model.Product;
 import com.sts.shared.model.User;
 
-import javax.sound.sampled.AudioFileFormat;
 import java.util.Scanner;
 
 public class UserInterface {
 
-    static MarketService marketService = new MarketService(new MarketStockRepository("data/market_stock.csv"),new CartRepository("data/cart.csv"));
+    static MarketService marketService = new MarketService(
+            new MarketStockRepository("data/market_stock.csv"),
+            new CartRepository("data/cart.csv"),
+            (module, action, status, details) -> {
+            }
+    );
 
     static final String SEPARATOR = "----------------------------------------------------------";
 

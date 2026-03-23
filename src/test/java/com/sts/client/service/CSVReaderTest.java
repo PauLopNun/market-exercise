@@ -19,6 +19,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class CSVReaderTest {
 
     @Test
+    void shouldInstantiateCsvReader() {
+        assertNotNull(new CSVReader());
+    }
+
+    @Test
     void getData() {
         List<String[]> dataExpected = new ArrayList<>();
         dataExpected.add(new String[]{"id","name","200"});
@@ -44,7 +49,8 @@ public class CSVReaderTest {
     @Test
     void shouldThrowWhenUserDoesNotExist() {
         assertThatThrownBy(() -> CSVReader.getUser( "does-not-exist" ))
-                .isInstanceOf( UserNotFoundException.class );
+                .isInstanceOf( UserNotFoundException.class )
+                .hasMessageContaining("does-not-exist");
     }
 
     @Test

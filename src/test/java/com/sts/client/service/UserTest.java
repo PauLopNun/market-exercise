@@ -10,8 +10,28 @@ public class UserTest {
 
 
     @Test
-    void equals() {
-        user.equals(new User("id3","paco",200.0));
+    void equals_shouldReturnTrue_whenSameReference() {
+        assertThat(user.equals(user)).isTrue();
+    }
+
+    @Test
+    void equals_shouldReturnFalse_whenComparedWithNull() {
+        assertThat(user.equals(null)).isFalse();
+    }
+
+    @Test
+    void equals_shouldReturnFalse_whenComparedWithDifferentClass() {
+        assertThat(user.equals("id")).isFalse();
+    }
+
+    @Test
+    void equals_shouldReturnTrue_whenIdsMatch() {
+        assertThat(user.equals(new User("id","otro",999.0))).isTrue();
+    }
+
+    @Test
+    void equals_shouldReturnFalse_whenIdsDoNotMatch() {
+        assertThat(user.equals(new User("id3","paco",200.0))).isFalse();
     }
 
     @Test

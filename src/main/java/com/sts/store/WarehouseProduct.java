@@ -1,19 +1,23 @@
 package com.sts.store;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Builder
 @Getter
 @Setter
 public class WarehouseProduct {
-    private int id;
+    private String productId;
     private String name;
     private int totalStock;
 
+    public WarehouseProduct(String productId, String name, int totalStock) {
+        this.productId = productId;
+        this.name = name;
+        this.totalStock = totalStock;
+    }
+
     @Override
     public String toString() {
-        return String.format("%d;%s;%d", id, name, totalStock);
+        return String.format("%s,%s,%d", productId, name, totalStock);
     }
 }

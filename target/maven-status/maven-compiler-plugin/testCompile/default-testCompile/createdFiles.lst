@@ -1,6 +1,14 @@
+com\sts\client\UserRepositoryTest.class
+com\sts\store\StoreServiceTest.class
+com\sts\shared\UserTest.class
 com\sts\market\MarketServiceTest.class
-com\sts\market\MarketStockRepositoryTest.class
-com\sts\MainTest.class
 com\sts\market\CartRepositoryTest.class
 com\sts\market\ProductTest.class
+com\sts\audit\EventTypeTest.class
 com\sts\market\CartEntryTest.class
+com\sts\payment\PaymentServiceTest.class
+com\sts\audit\AuditServiceTest.class
+com\sts\market\MarketStockRepositoryTest.class
+com\sts\MainTest.class
+com\sts\client\ClientServiceTest.class
+com\sts\store\WarehouseProductTest.class

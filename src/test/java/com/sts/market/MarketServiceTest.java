@@ -176,6 +176,26 @@ class MarketServiceTest {
     }
 
     @Test
+    void drop_shouldEvaluateUserAndProductMismatchBranches() throws IOException {
+        service.buy("u2", "P001", 1);
+        service.restock("P002", 1);
+        service.buy("u1", "P002", 1);
+
+        service.drop("u1", "P001", 1);
+
+        int p001Stock = stockRepo.findAll().stream()
+                .filter(product -> product.getProductId().equals("P001"))
+                .findFirst().get().getCurrentStock();
+
+        int p002Stock = stockRepo.findAll().stream()
+                .filter(product -> product.getProductId().equals("P002"))
+                .findFirst().get().getCurrentStock();
+
+        assertEquals(9, p001Stock);
+        assertEquals(0, p002Stock);
+    }
+
+    @Test
     void drop_shouldDoNothing_whenRequestedQtyIsZero() throws IOException {
         service.buy("u1", "P001", 2);
         service.drop("u1", "P001", 0);

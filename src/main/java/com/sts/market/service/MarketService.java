@@ -9,65 +9,65 @@ import java.io.IOException;
 import java.util.List;
 
 public class MarketService {
-    private final MarketStockRepository stockRepo;
-    private final CartRepository cartRepo;
+    private final MarketStockRepository stockRepository;
+    private final CartRepository cartRepository;
 
-    public MarketService(MarketStockRepository stockRepo, CartRepository cartRepo) {
-        this.stockRepo = stockRepo;
-        this.cartRepo = cartRepo;
+    public MarketService(MarketStockRepository stockRepository, CartRepository cartRepository) {
+        this.stockRepository = stockRepository;
+        this.cartRepository = cartRepository;
     }
 
-    public boolean buy(String userId, String productId, int qty) throws IOException {
-        List<Product> products = stockRepo.findAll();
-        Product product = findById(products, productId);
+    public boolean buy(String userId, String productId, int quantityToBuy) throws IOException {
+        List<Product> products = stockRepository.findAll();
+        Product product = findProductById(products, productId);
 
-        if (product == null || product.getCurrentStock() < qty) {
+        if (product == null || product.getCurrentStock() < quantityToBuy) {
             return false;
         }
 
-        product.setCurrentStock(product.getCurrentStock() - qty);
-        stockRepo.saveAll(products);
-        cartRepo.addOrUpdate(userId, productId, qty);
+        product.setCurrentStock(product.getCurrentStock() - quantityToBuy);
+        stockRepository.saveAll(products);
+        cartRepository.addOrUpdate(userId, productId, quantityToBuy);
         return true;
     }
 
-    public void drop(String userId, String productId, int qty) throws IOException {
-        List<CartEntry> entries = cartRepo.findAll();
-        int actualQty = 0;
+    public void drop(String userId, String productId, int quantityToDrop) throws IOException {
+        List<CartEntry> cartEntries = cartRepository.findAll();
+        int quantityToRestore = 0;
 
-        for (CartEntry e : entries) {
-            if (e.getUserId().equals(userId) && e.getProductId().equals(productId)) {
-                actualQty = Math.min(e.getQuantity(), qty);
+        for (CartEntry cartEntry : cartEntries) {
+            if (cartEntry.getUserId().equals(userId) && cartEntry.getProductId().equals(productId)) {
+                quantityToRestore = Math.min(cartEntry.getQuantity(), quantityToDrop);
                 break;
             }
         }
 
-        if (actualQty == 0) return;
+        if (quantityToRestore == 0) return;
 
-        List<Product> products = stockRepo.findAll();
-        Product product = findById(products, productId);
-
-        if (product != null) {
-            product.setCurrentStock(product.getCurrentStock() + actualQty);
-            stockRepo.saveAll(products);
-        }
-
-        cartRepo.remove(userId, productId, actualQty);
-    }
-
-    public void restock(String productId, int qty) throws IOException {
-        List<Product> products = stockRepo.findAll();
-        Product product = findById(products, productId);
+        List<Product> products = stockRepository.findAll();
+        Product product = findProductById(products, productId);
 
         if (product != null) {
-            product.setCurrentStock(product.getCurrentStock() + qty);
-            stockRepo.saveAll(products);
+            product.setCurrentStock(product.getCurrentStock() + quantityToRestore);
+            stockRepository.saveAll(products);
+        }
+
+        cartRepository.remove(userId, productId, quantityToRestore);
+    }
+
+    public void restock(String productId, int quantityToAdd) throws IOException {
+        List<Product> products = stockRepository.findAll();
+        Product product = findProductById(products, productId);
+
+        if (product != null) {
+            product.setCurrentStock(product.getCurrentStock() + quantityToAdd);
+            stockRepository.saveAll(products);
         }
     }
 
-    private Product findById(List<Product> products, String productId) {
+    private Product findProductById(List<Product> products, String productId) {
         return products.stream()
-                .filter(p -> p.getProductId().equals(productId))
+                .filter(product -> product.getProductId().equals(productId))
                 .findFirst()
                 .orElse(null);
     }

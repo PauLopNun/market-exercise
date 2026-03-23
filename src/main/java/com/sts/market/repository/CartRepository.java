@@ -7,74 +7,83 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CartRepository {
-    private final String filePath;
+    private final String cartFilePath;
 
-    public CartRepository(String filePath) {
-        this.filePath = filePath;
+    public CartRepository(String cartFilePath) {
+        this.cartFilePath = cartFilePath;
     }
 
     public List<CartEntry> findAll() throws IOException {
-        List<CartEntry> entries = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        List<CartEntry> cartEntries = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(cartFilePath))) {
             reader.readLine();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.isBlank()) continue;
-                String[] p = line.split(",");
-                entries.add(new CartEntry(p[0], p[1], Integer.parseInt(p[2])));
+            String csvLine;
+            while ((csvLine = reader.readLine()) != null) {
+                if (csvLine.isBlank()) continue;
+
+                String[] columns = csvLine.split(",");
+                cartEntries.add(new CartEntry(
+                        columns[0],
+                        columns[1],
+                        Integer.parseInt(columns[2])
+                ));
             }
         }
-        return entries;
+        return cartEntries;
     }
 
-    public void saveAll(List<CartEntry> entries) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+    public void saveAll(List<CartEntry> cartEntries) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(cartFilePath))) {
             writer.write("userId,productId,quantity\n");
-            for (CartEntry e : entries) {
+            for (CartEntry cartEntry : cartEntries) {
                 writer.write(String.join(",",
-                        e.getUserId(),
-                        e.getProductId(),
-                        String.valueOf(e.getQuantity())
+                        cartEntry.getUserId(),
+                        cartEntry.getProductId(),
+                        String.valueOf(cartEntry.getQuantity())
                 ) + "\n");
             }
         }
     }
 
-    public void addOrUpdate(String userId, String productId, int qty) throws IOException {
-        List<CartEntry> entries = findAll();
-        boolean found = false;
-        for (CartEntry e : entries) {
-            if (e.getUserId().equals(userId) && e.getProductId().equals(productId)) {
-                e.setQuantity(e.getQuantity() + qty);
-                found = true;
+    public void addOrUpdate(String userId, String productId, int quantityToAdd) throws IOException {
+        List<CartEntry> cartEntries = findAll();
+        boolean existingEntryFound = false;
+
+        for (CartEntry cartEntry : cartEntries) {
+            if (cartEntry.getUserId().equals(userId) && cartEntry.getProductId().equals(productId)) {
+                cartEntry.setQuantity(cartEntry.getQuantity() + quantityToAdd);
+                existingEntryFound = true;
                 break;
             }
         }
-        if (!found) {
-            entries.add(new CartEntry(userId, productId, qty));
+
+        if (!existingEntryFound) {
+            cartEntries.add(new CartEntry(userId, productId, quantityToAdd));
         }
-        saveAll(entries);
+
+        saveAll(cartEntries);
     }
 
-    public void remove(String userId, String productId, int qty) throws IOException {
-        List<CartEntry> entries = findAll();
-        CartEntry toRemove = null;
+    public void remove(String userId, String productId, int quantityToRemove) throws IOException {
+        List<CartEntry> cartEntries = findAll();
+        CartEntry entryToDelete = null;
 
-        for (CartEntry e : entries) {
-            if (e.getUserId().equals(userId) && e.getProductId().equals(productId)) {
-                int remaining = e.getQuantity() - qty;
-                if (remaining <= 0) {
-                    toRemove = e;
+        for (CartEntry cartEntry : cartEntries) {
+            if (cartEntry.getUserId().equals(userId) && cartEntry.getProductId().equals(productId)) {
+                int remainingQuantity = cartEntry.getQuantity() - quantityToRemove;
+                if (remainingQuantity <= 0) {
+                    entryToDelete = cartEntry;
                 } else {
-                    e.setQuantity(remaining);
+                    cartEntry.setQuantity(remainingQuantity);
                 }
                 break;
             }
         }
 
-        if (toRemove != null) {
-            entries.remove(toRemove);
+        if (entryToDelete != null) {
+            cartEntries.remove(entryToDelete);
         }
-        saveAll(entries);
+
+        saveAll(cartEntries);
     }
 }

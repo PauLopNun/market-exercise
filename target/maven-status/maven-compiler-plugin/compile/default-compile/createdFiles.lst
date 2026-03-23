@@ -1,0 +1,6 @@
+com\sts\market\service\MarketService.class
+com\sts\shared\model\CartEntry.class
+com\sts\shared\model\Product.class
+com\sts\market\repository\MarketStockRepository.class
+com\sts\Main.class
+com\sts\market\repository\CartRepository.class

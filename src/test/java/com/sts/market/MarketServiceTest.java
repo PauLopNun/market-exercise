@@ -1,10 +1,11 @@
 package com.sts.market;
 
-import com.sts.audit.EventType;
 import com.sts.market.repository.CartRepository;
 import com.sts.market.repository.MarketStockRepository;
 import com.sts.market.service.MarketService;
 import com.sts.shared.audit.AuditLogger;
+import com.sts.shared.model.CartEntry;
+import com.sts.shared.model.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -202,5 +203,28 @@ class MarketServiceTest {
         service.restock("P001", 10);
         assertTrue(stockRepo.findAll().isEmpty());
         assertTrue(logs.contains("MARKET_REFILLED:SUCCESS"));
+    }
+
+    @Test
+    void shouldNotBuyWhenProductNotExists() throws IOException {
+        boolean result = service.buy("u1", "P999", 1);
+        assertFalse(result);
+    }
+
+    @Test
+    void shouldRestockProduct() throws IOException {
+        service.restock("P001", 10);
+
+        List<Product> products = stockRepo.findAll();
+        assertEquals(20, products.get(0).getCurrentStock());
+    }
+
+    @Test
+    void shouldHandleDropWithZeroQuantity() throws IOException {
+        service.buy("u1", "P001", 5);
+        service.drop("u1", "P001", 0);
+
+        List<CartEntry> cart = cartRepo.findAll();
+        assertTrue(cart.stream().anyMatch(e -> e.getProductId().equals("P001")));
     }
 }

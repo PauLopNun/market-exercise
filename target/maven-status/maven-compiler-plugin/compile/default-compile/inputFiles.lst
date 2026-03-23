@@ -1,6 +1,18 @@
-C:\Users\pulz\OneDrive - GFT Technologies SE\Desktop\market-exercise\src\main\java\com\sts\Main.java
-C:\Users\pulz\OneDrive - GFT Technologies SE\Desktop\market-exercise\src\main\java\com\sts\market\repository\MarketStockRepository.java
-C:\Users\pulz\OneDrive - GFT Technologies SE\Desktop\market-exercise\src\main\java\com\sts\market\service\MarketService.java
-C:\Users\pulz\OneDrive - GFT Technologies SE\Desktop\market-exercise\src\main\java\com\sts\shared\model\CartEntry.java
-C:\Users\pulz\OneDrive - GFT Technologies SE\Desktop\market-exercise\src\main\java\com\sts\shared\model\Product.java
-C:\Users\pulz\OneDrive - GFT Technologies SE\Desktop\market-exercise\src\main\java\com\sts\market\repository\CartRepository.java
+C:\Users\paulo\Desktop\market-exercise-main\src\main\java\com\sts\store\Product.java
+C:\Users\paulo\Desktop\market-exercise-main\src\main\java\com\sts\audit\AuditService.java
+C:\Users\paulo\Desktop\market-exercise-main\src\main\java\com\sts\client\UserRepository.java
+C:\Users\paulo\Desktop\market-exercise-main\src\main\java\com\sts\store\Store.java
+C:\Users\paulo\Desktop\market-exercise-main\src\main\java\com\sts\shared\audit\AuditLogger.java
+C:\Users\paulo\Desktop\market-exercise-main\src\main\java\com\sts\Main.java
+C:\Users\paulo\Desktop\market-exercise-main\src\main\java\com\sts\market\service\MarketService.java
+C:\Users\paulo\Desktop\market-exercise-main\src\main\java\com\sts\audit\EventType.java
+C:\Users\paulo\Desktop\market-exercise-main\src\main\java\com\sts\payment\PaymentService.java
+C:\Users\paulo\Desktop\market-exercise-main\src\main\java\com\sts\client\ClientService.java
+C:\Users\paulo\Desktop\market-exercise-main\src\main\java\com\sts\store\WarehouseProduct.java
+C:\Users\paulo\Desktop\market-exercise-main\src\main\java\com\sts\market\repository\CartRepository.java
+C:\Users\paulo\Desktop\market-exercise-main\src\main\java\com\sts\shared\model\User.java
+C:\Users\paulo\Desktop\market-exercise-main\src\main\java\com\sts\shared\model\Product.java
+C:\Users\paulo\Desktop\market-exercise-main\src\main\java\com\sts\store\StoreImplements.java
+C:\Users\paulo\Desktop\market-exercise-main\src\main\java\com\sts\shared\model\CartEntry.java
+C:\Users\paulo\Desktop\market-exercise-main\src\main\java\com\sts\market\repository\MarketStockRepository.java
+C:\Users\paulo\Desktop\market-exercise-main\src\main\java\com\sts\store\StoreService.java

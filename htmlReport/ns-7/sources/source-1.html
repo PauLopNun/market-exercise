@@ -1,0 +1,123 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > CartEntry</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.sts.shared.model</a>
+</div>
+
+<h1>Coverage Summary for Class: CartEntry (com.sts.shared.model)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CartEntry</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/8)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.sts.shared.model;
+&nbsp;
+&nbsp;public class CartEntry {
+&nbsp;    private String userId;
+&nbsp;    private String productId;
+&nbsp;    private int quantity;
+&nbsp;
+<b class="fc">&nbsp;    public CartEntry(String userId, String productId, int quantity) {</b>
+<b class="fc">&nbsp;        this.userId = userId;</b>
+<b class="fc">&nbsp;        this.productId = productId;</b>
+<b class="fc">&nbsp;        this.quantity = quantity;</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    public String getUserId() { return userId; }</b>
+<b class="fc">&nbsp;    public String getProductId() { return productId; }</b>
+<b class="fc">&nbsp;    public int getQuantity() { return quantity; }</b>
+&nbsp;
+<b class="fc">&nbsp;    public void setQuantity(int quantity) { this.quantity = quantity; }</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-03-23 23:16</div>
+</div>
+</body>
+</html>

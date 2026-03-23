@@ -1,6 +1,15 @@
+com\sts\client\ClientService.class
+com\sts\shared\audit\AuditLogger.class
+com\sts\payment\PaymentService.class
 com\sts\market\service\MarketService.class
-com\sts\shared\model\CartEntry.class
 com\sts\shared\model\Product.class
+com\sts\audit\AuditService.class
+com\sts\client\UserRepository.class
+com\sts\shared\model\CartEntry.class
 com\sts\market\repository\MarketStockRepository.class
-com\sts\Main.class
+com\sts\audit\EventType.class
+com\sts\store\StoreService.class
 com\sts\market\repository\CartRepository.class
+com\sts\store\WarehouseProduct.class
+com\sts\shared\model\User.class
+com\sts\Main.class

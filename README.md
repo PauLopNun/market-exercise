@@ -1,8 +1,8 @@
 # StS — Simple Terminal Supermarket
 
 ![Java](https://img.shields.io/badge/Java-17-orange?style=flat-square&logo=openjdk)
-![Build](https://img.shields.io/badge/Build-Maven-blue?style=flat-square&logo=apachemaven)
-![Tests](https://img.shields.io/badge/Tests-JUnit%205-green?style=flat-square&logo=junit5)
+![Build](https://img.shields.io/badge/Build-Maven-blue?style=flat-square)
+![Tests](https://img.shields.io/badge/Tests-JUnit%205-green?style=flat-square)
 ![Coverage](https://img.shields.io/badge/Coverage-100%25-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/License-Academic-lightgrey?style=flat-square)
 
@@ -102,7 +102,23 @@ All modules ──────────────────────�
 
 ---
 
-## CI / CD
+## Code Quality
+
+### Clean Code Standards
+
+All code follows **Robert C. Martin's Clean Code** principles:
+
+| Principle | Status | Details |
+|-----------|--------|---------|
+| Meaningful Names | IMPLEMENTED | No single-letter variables (except loop counters), no abbreviations |
+| Single Responsibility | IMPLEMENTED | Each class has one reason to change |
+| DRY (Don't Repeat Yourself) | IMPLEMENTED | CSV parsing logic abstracted to repositories |
+| KISS (Keep It Simple) | IMPLEMENTED | No frameworks, pure Java logic |
+| Method Names | IMPLEMENTED | Consistent pattern: `read*()`, `write*()`, `find*()`, `save*()` |
+
+See: [CLEAN_CODE_STANDARDS.md](./CLEAN_CODE_STANDARDS.md)
+
+
 
 Every push and pull request to `main` or `develop` runs automatically:
 

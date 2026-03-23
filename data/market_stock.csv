@@ -1,1 +1,4 @@
 productId,name,price,current_stock,max_capacity
+P001,Laptop,999.99,242,50
+P002,Mouse,29.99,108,200
+P003,Keyboard,79.99,54,100

@@ -80,4 +80,10 @@ public class UserInterface {
         return sc.next();
     }
 
+    public static int getQuantityByConsole(Scanner sc){
+        System.out.println(SEPARATOR);
+        System.out.println("- Enter quantity");
+        return sc.nextInt();
+    }
+
 }

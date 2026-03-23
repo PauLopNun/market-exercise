@@ -116,10 +116,6 @@ All code follows **Robert C. Martin's Clean Code** principles:
 | KISS (Keep It Simple) | IMPLEMENTED | No frameworks, pure Java logic |
 | Method Names | IMPLEMENTED | Consistent pattern: `read*()`, `write*()`, `find*()`, `save*()` |
 
-See: [CLEAN_CODE_STANDARDS.md](./CLEAN_CODE_STANDARDS.md)
-
-
-
 Every push and pull request to `main` or `develop` runs automatically:
 
 - Compile with Java 17

@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 public class PaymentAuditor {
     private static final String FILE_PATH = "data/audit_log.csv";
 
-    public void log(EventType type, String message) {
+    public static void log(EventType type, String message) {
         try (PrintWriter out = new PrintWriter(new FileWriter(FILE_PATH, true))) {
             String timestamp = LocalDateTime.now().toString();
             out.printf("%s, %s, %s%n", timestamp, type, message);

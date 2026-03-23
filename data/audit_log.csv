@@ -1,1 +1,4 @@
 timestamp,module,action,status,details
+2026-03-23 10:00:00,PAYMENT,CREATE,SUCCESS,Pago realizado
+2026-03-23 10:05:00,AUTH,LOGIN,FAILED,Contraseña incorrecta
+2026-03-23 10:10:00,ORDER,UPDATE,SUCCESS,Pedido actualizado

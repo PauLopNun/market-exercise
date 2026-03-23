@@ -11,10 +11,9 @@ public class UserInterface {
     static final String SEPARATOR = "----------------------------------------------------------";
 
     public static void startInterface(){
-        UserLogin userLogin = new UserLogin();
         try(Scanner sc = new Scanner(System.in)){
             String identifier = getIdentifierByConsole(sc);
-            User activeUser = userLogin.login(identifier);
+            User activeUser = UserLogin.login(identifier);
             boolean end = false;
             while(!end){
                 printMenu(activeUser);
@@ -22,7 +21,7 @@ public class UserInterface {
                 switch (option){
                     case 1:
                         try{
-                            activeUser = userLogin.login(getIdentifierByConsole(sc));
+                            activeUser = UserLogin.login(getIdentifierByConsole(sc));
                         }catch (IllegalArgumentException e){
                             System.out.println(e.getMessage());
                         }

@@ -92,4 +92,25 @@ class MarketStockRepositoryTest {
         MarketStockRepository badRepo = new MarketStockRepository("nonexistent.csv");
         assertThrows(IOException.class, badRepo::findAll);
     }
+
+    @Test
+    void shouldIgnoreBlankLinesWhenReadingStockCsv() throws IOException {
+        Files.writeString(csvFile,
+                "productId,name,price,current_stock,max_capacity\n" +
+                "\n" +
+                "P001,Leche,1.20,50,100\n"
+        );
+
+        List<Product> products = repository.findAll();
+        assertEquals(1, products.size());
+        assertEquals("P001", products.get(0).getProductId());
+    }
+
+    @Test
+    void shouldWriteOnlyHeaderWhenSavingEmptyStock() throws IOException {
+        repository.saveAll(List.of());
+
+        String content = Files.readString(csvFile);
+        assertEquals("productId,name,price,current_stock,max_capacity\n", content);
+    }
 }

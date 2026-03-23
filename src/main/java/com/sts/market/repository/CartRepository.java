@@ -16,7 +16,7 @@ public class CartRepository {
     public List<CartEntry> findAll() throws IOException {
         List<CartEntry> entries = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            reader.readLine(); // skip header
+            reader.readLine();
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.isBlank()) continue;

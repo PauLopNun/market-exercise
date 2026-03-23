@@ -110,6 +110,14 @@ class MarketServiceTest {
         assertTrue(result);
     }
 
+    @Test
+    void buy_shouldReturnFalse_whenStockListIsEmpty() throws IOException {
+        stockRepo.saveAll(java.util.List.of());
+
+        boolean result = service.buy("u1", "P001", 1);
+        assertFalse(result);
+    }
+
     // ── DROP ─────────────────────────────────────────────────────────────────
 
     @Test
@@ -167,6 +175,34 @@ class MarketServiceTest {
         assertEquals(10, stock);
     }
 
+    @Test
+    void drop_shouldDoNothing_whenRequestedQtyIsZero() throws IOException {
+        service.buy("u1", "P001", 2);
+        service.drop("u1", "P001", 0);
+
+        int stock = stockRepo.findAll().stream()
+                .filter(p -> p.getProductId().equals("P001"))
+                .findFirst().get().getCurrentStock();
+
+        int qty = cartRepo.findAll().stream()
+                .filter(e -> e.getUserId().equals("u1") && e.getProductId().equals("P001"))
+                .findFirst().get().getQuantity();
+
+        assertEquals(8, stock);
+        assertEquals(2, qty);
+    }
+
+    @Test
+    void drop_shouldRemoveFromCartEvenWhenProductNoLongerExistsInStock() throws IOException {
+        service.buy("u1", "P001", 2);
+
+        stockRepo.saveAll(java.util.List.of());
+        service.drop("u1", "P001", 2);
+
+        assertTrue(cartRepo.findAll().isEmpty());
+        assertTrue(stockRepo.findAll().isEmpty());
+    }
+
     // ── RESTOCK ──────────────────────────────────────────────────────────────
 
     @Test
@@ -200,5 +236,13 @@ class MarketServiceTest {
                 .findFirst().get().getCurrentStock();
 
         assertEquals(10, stock);
+    }
+
+    @Test
+    void restock_shouldDoNothing_whenStockListIsEmpty() throws IOException {
+        stockRepo.saveAll(java.util.List.of());
+        service.restock("P001", 10);
+
+        assertTrue(stockRepo.findAll().isEmpty());
     }
 }

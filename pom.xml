@@ -94,11 +94,7 @@
                                         <limit>
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
-<<<<<<< HEAD
-                                            <minimum>0.80</minimum>
-=======
                                             <minimum>1</minimum>
->>>>>>> origin/main
                                         </limit>
                                     </limits>
                                 </rule>

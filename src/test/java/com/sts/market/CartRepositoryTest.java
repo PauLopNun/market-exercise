@@ -124,4 +124,27 @@ class CartRepositoryTest {
         CartRepository badRepo = new CartRepository("nonexistent.csv");
         assertThrows(IOException.class, badRepo::findAll);
     }
+
+    @Test
+    void shouldIgnoreBlankLinesWhenReadingCartCsv() throws IOException {
+        Files.writeString(csvFile,
+                "userId,productId,quantity\n" +
+                "\n" +
+                "u1,P001,2\n"
+        );
+
+        List<CartEntry> entries = repository.findAll();
+        assertEquals(1, entries.size());
+        assertEquals("u1", entries.get(0).getUserId());
+        assertEquals("P001", entries.get(0).getProductId());
+        assertEquals(2, entries.get(0).getQuantity());
+    }
+
+    @Test
+    void shouldWriteOnlyHeaderWhenSavingEmptyCart() throws IOException {
+        repository.saveAll(List.of());
+
+        String content = Files.readString(csvFile);
+        assertEquals("userId,productId,quantity\n", content);
+    }
 }

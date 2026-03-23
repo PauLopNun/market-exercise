@@ -33,6 +33,10 @@ public class Logs {
             throw new RuntimeException("Error leyendo logs", e);
         }
 
+        for (String log : Logs) {
+            System.out.println(log);
+        }
+
         return Logs;
     }
 

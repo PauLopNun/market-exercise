@@ -1,10 +1,10 @@
-package com.sts.payment.integration;
+package com.sts.audit;
 
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 
-public class PaymentAuditor {
+public class AuditorWriterCsv {
     private static final String FILE_PATH = "data/audit_log.csv";
 
     public static void log(EventType type, String message) {

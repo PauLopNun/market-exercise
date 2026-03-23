@@ -1,4 +1,4 @@
-package com.sts.payment.integration;
+package com.sts.audit;
 
 public enum EventType {
     USER_LOGGED_IN,

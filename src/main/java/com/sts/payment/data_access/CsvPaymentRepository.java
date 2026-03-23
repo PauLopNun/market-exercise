@@ -6,6 +6,8 @@ import com.sts.shared.model.Product;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,24 +91,100 @@ public class CsvPaymentRepository implements PaymentDataGateway {
 
         return productFound;
     }
-
-    @Override
-    public void removeLastItemFromCart(String userId) {
-
-    }
-
-    @Override
-    public void incrementProductStock(String productId, int quantity) {
-
-    }
-
     @Override
     public void updateBalance(String userId, double newBudget) {
+        Path path = Path.of(this.usersFile);
+        int attempts = 0;
+        boolean success = false;
 
+        while (attempts < 3 && !success) {
+            try {
+                List<String> lines = Files.readAllLines(path);
+                for (int i = 0; i < lines.size(); i++) {
+                    String[] parts = lines.get(i).split(",");
+                    if (parts[0].equals(userId)) {
+                        lines.set(i, parts[0] + "," + parts[1] + "," + newBudget);
+                        break;
+                    }
+                }
+                Files.write(path, lines);
+                success = true;
+            } catch (IOException e) {
+                attempts++;
+                if (attempts >= 3) {
+                    System.err.println("Error crítico tras 3 intentos: " + e.getMessage());
+                } else {
+                    try { Thread.sleep(100); } catch (InterruptedException ignored) {}
+                }
+            }
+        }
     }
 
     @Override
     public void clearCart(String userId) {
 
+        Path path = Path.of(this.cartFile);
+
+        try {
+            List<String> lines = Files.readAllLines(path);
+
+            lines.removeIf(line -> line.startsWith(userId + ","));
+            Files.write(path, lines);
+
+        } catch (IOException e) {
+            System.err.println("Error vaciando el carrito: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void removeLastItemFromCart(String userId) {
+
+        Path path = Path.of(this.cartFile);
+
+        try {
+
+            List<String> lines = Files.readAllLines(path);
+
+            for (int i = lines.size() - 1; i >= 0; i--) {
+
+                if (lines.get(i).startsWith(userId + ",")) {
+                    lines.remove(i);
+                    break;
+                }
+
+            }
+            Files.write(path, lines);
+
+        } catch (IOException e) {
+            System.err.println("Error borrando último item: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void incrementProductStock(String productId, int quantity) {
+
+        Path path = Path.of(this.marketFile);
+
+        try {
+
+            List<String> lines = Files.readAllLines(path);
+
+            for (int i = 0; i < lines.size(); i++) {
+                String[] parts = lines.get(i).split(",");
+
+                if (parts[0].equals(productId)) {
+
+                    int currentStock = Integer.parseInt(parts[3]);
+                    int newStock = currentStock + quantity;
+                    lines.set(i, parts[0] + "," + parts[1] + "," + parts[2] + "," + newStock + "," + parts[4]);
+                    break;
+
+                }
+            }
+
+            Files.write(path, lines);
+        } catch (IOException e) {
+            System.err.println("Error incrementando stock: " + e.getMessage());
+        }
     }
 }

@@ -11,12 +11,13 @@ public class CartItem {
         this.quantity = quantity;
     }
 
-    public String getUserId() {
-        return userId;
-    }
 
     public String getProductId() {
         return productId;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public int getQuantity() {

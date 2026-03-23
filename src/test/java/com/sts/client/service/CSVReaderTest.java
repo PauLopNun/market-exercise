@@ -1,3 +1,5 @@
+package com.sts.client.service;
+
 import com.sts.shared.model.CSVReader;
 import com.sts.shared.model.User;
 import com.sts.shared.model.UserNotFoundException;

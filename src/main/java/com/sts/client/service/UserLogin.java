@@ -7,7 +7,7 @@ import java.util.List;
 
 public class UserLogin {
 
-    public User login(String identifier){
+    public static User login(String identifier){
         return CSVReader.getUser(identifier);
     }
 }

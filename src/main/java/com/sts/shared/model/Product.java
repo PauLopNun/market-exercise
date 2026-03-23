@@ -1,5 +1,12 @@
 package com.sts.shared.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@AllArgsConstructor
+@Setter
+@Getter
 public class Product {
     private String productId;
     private String name;
@@ -7,19 +14,4 @@ public class Product {
     private int currentStock;
     private int maxCapacity;
 
-    public Product(String productId, String name, double price, int currentStock, int maxCapacity) {
-        this.productId = productId;
-        this.name = name;
-        this.price = price;
-        this.currentStock = currentStock;
-        this.maxCapacity = maxCapacity;
-    }
-
-    public String getProductId() { return productId; }
-    public String getName() { return name; }
-    public double getPrice() { return price; }
-    public int getCurrentStock() { return currentStock; }
-    public int getMaxCapacity() { return maxCapacity; }
-
-    public void setCurrentStock(int currentStock) { this.currentStock = currentStock; }
 }

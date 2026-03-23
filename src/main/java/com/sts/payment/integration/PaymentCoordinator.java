@@ -3,7 +3,7 @@ package com.sts.payment.integration;
 public class PaymentCoordinator {
 
     public void processSuccess(String userId, double amount) {
-        PaymentAuditor.log(EventType.PAYMENT_SUCCESS, "Usuario: " + userId + " pagó " + amount);
+        PaymentAuditor.log(EventType.PAYMENT_ACCEPTED, "Usuario: " + userId + " pagó " + amount);
         System.out.println("[INFO] Notificando éxito al resto de módulos...");
     }
 

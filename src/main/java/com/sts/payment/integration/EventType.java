@@ -1,8 +1,10 @@
 package com.sts.payment.integration;
 
 public enum EventType {
-    PAYMENT_SUCCESS,
+    USER_LOGGED_IN,
+    ITEM_PURCHASED,
+    ITEM_DROPPED,
+    PAYMENT_ACCEPTED,
     PAYMENT_DENIED,
-    LIFO_ITEM_REMOVED,
-    INVENTORY_UPDATED
+    MARKET_REFILLED
 }

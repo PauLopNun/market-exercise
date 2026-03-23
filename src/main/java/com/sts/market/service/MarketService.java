@@ -10,15 +10,13 @@ import com.sts.shared.model.Product;
 import java.io.IOException;
 import java.util.List;
 
-public class MarketService {
+public class MarketService{
     private final MarketStockRepository stockRepo;
     private final CartRepository cartRepo;
-    private final AuditLogger auditLogger;
 
-    public MarketService(MarketStockRepository stockRepo, CartRepository cartRepo, AuditLogger auditLogger) {
+    public MarketService(MarketStockRepository stockRepo, CartRepository cartRepo) {
         this.stockRepo = stockRepo;
         this.cartRepo = cartRepo;
-        this.auditLogger = auditLogger;
     }
 
     public boolean buy(String userId, String productId, int qty) throws IOException {
@@ -28,8 +26,8 @@ public class MarketService {
         // Caso: El producto no existe o no hay stock suficiente
         if (product == null || product.getCurrentStock() < qty) {
             String stockInfo = (product == null) ? "Product not found" : "Stock: " + product.getCurrentStock();
-            auditLogger.log("MARKET", EventType.ITEM_PURCHASED, "FAILED",
-                    "User: " + userId + " | ProductId: " + productId + " | Requested: " + qty + " | Error: " + stockInfo);
+            //.log("MARKET", EventType.ITEM_PURCHASED, "FAILED",
+                    //"User: " + userId + " | ProductId: " + productId + " | Requested: " + qty + " | Error: " + stockInfo);
             return false;
         }
 
@@ -39,8 +37,8 @@ public class MarketService {
         cartRepo.addOrUpdate(userId, productId, qty);
 
         double totalAmount = product.getPrice() * qty;
-        auditLogger.log("MARKET", EventType.ITEM_PURCHASED, "SUCCESS",
-                "User: " + userId + " | Product: " + product.getName() + " | Qty: " + qty + " | Total: " + totalAmount + "€");
+       // auditLogger.log("MARKET", EventType.ITEM_PURCHASED, "SUCCESS",
+                //"User: " + userId + " | Product: " + product.getName() + " | Qty: " + qty + " | Total: " + totalAmount + "€");
 
         return true;
     }
@@ -67,8 +65,8 @@ public class MarketService {
         }
         cartRepo.remove(userId, productId, actualQty);
 
-        auditLogger.log("MARKET", EventType.ITEM_DROPPED, "SUCCESS",
-                "User: " + userId + " | ProductId: " + productId + " | QtyReturned: " + actualQty);
+        //auditLogger.log("MARKET", EventType.ITEM_DROPPED, "SUCCESS",
+               // "User: " + userId + " | ProductId: " + productId + " | QtyReturned: " + actualQty);
     }
 
     public void restock(String productId, int qty) throws IOException {
@@ -80,8 +78,8 @@ public class MarketService {
             stockRepo.saveAll(products);
         }
 
-        auditLogger.log("MARKET", EventType.MARKET_REFILLED, "SUCCESS",
-                "Restock Event | ProductId: " + productId + " | Qty: " + qty);
+        //auditLogger.log("MARKET", EventType.MARKET_REFILLED, "SUCCESS",
+                //"Restock Event | ProductId: " + productId + " | Qty: " + qty);
     }
 
     private Product findById(List<Product> products, String productId) {

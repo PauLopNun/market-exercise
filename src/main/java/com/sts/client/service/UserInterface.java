@@ -1,12 +1,18 @@
 package com.sts.client.service;
 
+import com.sts.market.repository.CartRepository;
+import com.sts.market.repository.MarketStockRepository;
 import com.sts.market.service.MarketService;
+import com.sts.shared.audit.AuditLogger;
 import com.sts.shared.model.Product;
 import com.sts.shared.model.User;
 
+import javax.sound.sampled.AudioFileFormat;
 import java.util.Scanner;
 
 public class UserInterface {
+
+    static MarketService marketService = new MarketService(new MarketStockRepository("data/market_stock.csv"),new CartRepository("data/cart.csv"));
 
     static final String SEPARATOR = "----------------------------------------------------------";
 
@@ -25,13 +31,11 @@ public class UserInterface {
                             //Logs.log("CLIENTS","LOGIN","SUCCESS",activeUser.getName() + " LOGGED IN");
                             break;
                         case "2","buy":
-                            getIdentifierByConsole(sc);
-                            getQuantityByConsole(sc);
-
+                            marketService.buy(activeUser.getId(), getIdentifierByConsole(sc), getQuantityByConsole(sc));
                             //buy
                             break;
                         case "3","drop":
-                            getIdentifierByConsole(sc);
+                            marketService.drop(activeUser.getId(), getIdentifierByConsole(sc), getQuantityByConsole(sc));
                             //drop
                             break;
                         case "4","checkout":

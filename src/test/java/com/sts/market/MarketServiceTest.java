@@ -1,10 +1,8 @@
 package com.sts.market;
 
-import com.sts.audit.EventType;
 import com.sts.market.repository.CartRepository;
 import com.sts.market.repository.MarketStockRepository;
 import com.sts.market.service.MarketService;
-import com.sts.shared.audit.AuditLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -12,7 +10,6 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +22,6 @@ class MarketServiceTest {
     private MarketService service;
     private MarketStockRepository stockRepo;
     private CartRepository cartRepo;
-    private List<String> logs;
 
     @BeforeEach
     void setUp() throws IOException {
@@ -41,20 +37,13 @@ class MarketServiceTest {
 
         stockRepo = new MarketStockRepository(stockFile.toString());
         cartRepo  = new CartRepository(cartFile.toString());
-        logs = new ArrayList<>();
-
-        AuditLogger auditLogger = (module, action, status, details) -> {
-            logs.add(action.toString() + ":" + status);
-        };
-
-        service = new MarketService(stockRepo, cartRepo, auditLogger);
+        service = new MarketService(stockRepo, cartRepo);
     }
 
     @Test
     void buy_shouldReturnTrue_whenStockIsSufficient() throws IOException {
         boolean result = service.buy("u1", "P001", 3);
         assertTrue(result);
-        assertTrue(logs.contains("ITEM_PURCHASED:SUCCESS"));
     }
 
     @Test
@@ -79,21 +68,18 @@ class MarketServiceTest {
     void buy_shouldReturnFalse_whenStockIsZero() throws IOException {
         boolean result = service.buy("u1", "P002", 1);
         assertFalse(result);
-        assertTrue(logs.contains("ITEM_PURCHASED:FAILED"));
     }
 
     @Test
     void buy_shouldReturnFalse_whenRequestedQtyExceedsStock() throws IOException {
         boolean result = service.buy("u1", "P001", 99);
         assertFalse(result);
-        assertTrue(logs.contains("ITEM_PURCHASED:FAILED"));
     }
 
     @Test
     void buy_shouldReturnFalse_whenProductDoesNotExist() throws IOException {
         boolean result = service.buy("u1", "P999", 1);
         assertFalse(result);
-        assertTrue(logs.contains("ITEM_PURCHASED:FAILED"));
     }
 
     @Test
@@ -117,7 +103,6 @@ class MarketServiceTest {
                 .filter(p -> p.getProductId().equals("P001"))
                 .findFirst().get().getCurrentStock();
         assertEquals(9, stock);
-        assertTrue(logs.contains("ITEM_DROPPED:SUCCESS"));
     }
 
     @Test
@@ -183,7 +168,6 @@ class MarketServiceTest {
                 .filter(p -> p.getProductId().equals("P001"))
                 .findFirst().get().getCurrentStock();
         assertEquals(15, stock);
-        assertTrue(logs.contains("MARKET_REFILLED:SUCCESS"));
     }
 
     @Test
@@ -193,7 +177,6 @@ class MarketServiceTest {
                 .filter(p -> p.getProductId().equals("P001"))
                 .findFirst().get().getCurrentStock();
         assertEquals(10, stock);
-        assertTrue(logs.contains("MARKET_REFILLED:SUCCESS"));
     }
 
     @Test
@@ -201,6 +184,5 @@ class MarketServiceTest {
         stockRepo.saveAll(List.of());
         service.restock("P001", 10);
         assertTrue(stockRepo.findAll().isEmpty());
-        assertTrue(logs.contains("MARKET_REFILLED:SUCCESS"));
     }
 }

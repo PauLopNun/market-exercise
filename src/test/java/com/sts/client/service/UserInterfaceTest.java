@@ -45,11 +45,6 @@ public class UserInterfaceTest {
         assertNotNull(new UserInterface());
     }
 
-    @Test
-    void shouldExecuteDefaultMarketLoggerLambda() throws Exception {
-        UserInterface.marketService = originalMarketService;
-        UserInterface.marketService.restock("NOT_EXISTS", 1);
-    }
 
     @Test
     void shouldExitFlow() {

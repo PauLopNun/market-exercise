@@ -11,9 +11,7 @@ public class UserInterface {
 
     static MarketService marketService = new MarketService(
             new MarketStockRepository("data/market_stock.csv"),
-            new CartRepository("data/cart.csv"),
-            (module, action, status, details) -> {
-            }
+            new CartRepository("data/cart.csv")
     );
 
     static final String SEPARATOR = "----------------------------------------------------------";

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CartRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Simple Terminal Supermarket</a> &gt; <a href="index.source.html" class="el_package">com.sts.market.repository</a> &gt; <span class="el_source">CartRepository.java</span></div><h1>CartRepository.java</h1><pre class="source lang-java linenums">package com.sts.market.repository;
+
+import com.sts.shared.model.CartEntry;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class CartRepository {
+    private final String cartFilePath;
+
+<span class="fc" id="L12">    public CartRepository(String cartFilePath) {</span>
+<span class="fc" id="L13">        this.cartFilePath = cartFilePath;</span>
+<span class="fc" id="L14">    }</span>
+
+    public List&lt;CartEntry&gt; findAll() throws IOException {
+<span class="fc" id="L17">        List&lt;CartEntry&gt; cartEntries = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L18">        try (BufferedReader reader = new BufferedReader(new FileReader(cartFilePath))) {</span>
+<span class="fc" id="L19">            reader.readLine();</span>
+            String csvLine;
+<span class="fc bfc" id="L21" title="All 2 branches covered.">            while ((csvLine = reader.readLine()) != null) {</span>
+<span class="fc bfc" id="L22" title="All 2 branches covered.">                if (csvLine.isBlank()) continue;</span>
+
+<span class="fc" id="L24">                String[] columns = csvLine.split(&quot;,&quot;);</span>
+<span class="fc" id="L25">                cartEntries.add(new CartEntry(</span>
+                        columns[0],
+                        columns[1],
+<span class="fc" id="L28">                        Integer.parseInt(columns[2])</span>
+                ));
+<span class="fc" id="L30">            }</span>
+        }
+<span class="fc" id="L32">        return cartEntries;</span>
+    }
+
+    public void saveAll(List&lt;CartEntry&gt; cartEntries) throws IOException {
+<span class="fc" id="L36">        try (BufferedWriter writer = new BufferedWriter(new FileWriter(cartFilePath))) {</span>
+<span class="fc" id="L37">            writer.write(&quot;userId,productId,quantity\n&quot;);</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">            for (CartEntry cartEntry : cartEntries) {</span>
+<span class="fc" id="L39">                writer.write(String.join(&quot;,&quot;,</span>
+<span class="fc" id="L40">                        cartEntry.getUserId(),</span>
+<span class="fc" id="L41">                        cartEntry.getProductId(),</span>
+<span class="fc" id="L42">                        String.valueOf(cartEntry.getQuantity())</span>
+                ) + &quot;\n&quot;);
+<span class="fc" id="L44">            }</span>
+        }
+<span class="fc" id="L46">    }</span>
+
+    public void addOrUpdate(String userId, String productId, int quantityToAdd) throws IOException {
+<span class="fc" id="L49">        List&lt;CartEntry&gt; cartEntries = findAll();</span>
+<span class="fc" id="L50">        boolean existingEntryFound = false;</span>
+
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        for (CartEntry cartEntry : cartEntries) {</span>
+<span class="fc bfc" id="L53" title="All 4 branches covered.">            if (cartEntry.getUserId().equals(userId) &amp;&amp; cartEntry.getProductId().equals(productId)) {</span>
+<span class="fc" id="L54">                cartEntry.setQuantity(cartEntry.getQuantity() + quantityToAdd);</span>
+<span class="fc" id="L55">                existingEntryFound = true;</span>
+<span class="fc" id="L56">                break;</span>
+            }
+<span class="fc" id="L58">        }</span>
+
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (!existingEntryFound) {</span>
+<span class="fc" id="L61">            cartEntries.add(new CartEntry(userId, productId, quantityToAdd));</span>
+        }
+
+<span class="fc" id="L64">        saveAll(cartEntries);</span>
+<span class="fc" id="L65">    }</span>
+
+    public void remove(String userId, String productId, int quantityToRemove) throws IOException {
+<span class="fc" id="L68">        List&lt;CartEntry&gt; cartEntries = findAll();</span>
+<span class="fc" id="L69">        CartEntry entryToDelete = null;</span>
+
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        for (CartEntry cartEntry : cartEntries) {</span>
+<span class="fc bfc" id="L72" title="All 4 branches covered.">            if (cartEntry.getUserId().equals(userId) &amp;&amp; cartEntry.getProductId().equals(productId)) {</span>
+<span class="fc" id="L73">                int remainingQuantity = cartEntry.getQuantity() - quantityToRemove;</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">                if (remainingQuantity &lt;= 0) {</span>
+<span class="fc" id="L75">                    entryToDelete = cartEntry;</span>
+                } else {
+<span class="fc" id="L77">                    cartEntry.setQuantity(remainingQuantity);</span>
+                }
+<span class="fc" id="L79">                break;</span>
+            }
+<span class="fc" id="L81">        }</span>
+
+<span class="fc bfc" id="L83" title="All 2 branches covered.">        if (entryToDelete != null) {</span>
+<span class="fc" id="L84">            cartEntries.remove(entryToDelete);</span>
+        }
+
+<span class="fc" id="L87">        saveAll(cartEntries);</span>
+<span class="fc" id="L88">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

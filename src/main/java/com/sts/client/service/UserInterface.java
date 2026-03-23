@@ -1,5 +1,6 @@
 package com.sts.client.service;
 
+import com.sts.market.service.MarketService;
 import com.sts.shared.model.Product;
 import com.sts.shared.model.User;
 
@@ -21,9 +22,12 @@ public class UserInterface {
                     switch (option){
                         case "1","login":
                             activeUser = UserLogin.login(getIdentifierByConsole(sc));
+                            //Logs.log("CLIENTS","LOGIN","SUCCESS",activeUser.getName() + " LOGGED IN");
                             break;
                         case "2","buy":
                             getIdentifierByConsole(sc);
+                            getQuantityByConsole(sc);
+
                             //buy
                             break;
                         case "3","drop":
@@ -44,7 +48,7 @@ public class UserInterface {
                         default:
                             System.out.println("INCORRECT OPTION :(");
                     }
-                }catch (IllegalArgumentException e){
+                }catch (Exception e){
                     System.out.println(e.getMessage());
                 }
 

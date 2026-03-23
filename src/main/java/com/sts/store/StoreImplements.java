@@ -8,9 +8,11 @@ public class StoreImplements implements Store {
 
     @Override
     public void refillProducts() {
-        List<Product> marketProducts = getProductsFromCSV();
-        List<WarehouseProduct> warehouseProducts = getWarehouseProductsFromCSV();
-        boolean modified = replenishLowStockProducts(marketProducts, warehouseProducts);
+        final List<Product> marketProducts = getProductsFromCSV();
+        final List<WarehouseProduct> warehouseProducts = getWarehouseProductsFromCSV();
+
+        final boolean modified = replenishLowStockProducts(marketProducts, warehouseProducts);
+
         if (modified) {
             writeMarketCSV(marketProducts);
             writeWarehouseCSV(warehouseProducts);
@@ -18,16 +20,18 @@ public class StoreImplements implements Store {
     }
 
     private boolean replenishLowStockProducts(List<Product> marketProducts, List<WarehouseProduct> warehouseProducts) {
-        for (Product marketItem : marketProducts) {
-            if ((double) marketItem.getCurrentStock() / marketItem.getMaxCapacity() < 0.2) {
-                for (WarehouseProduct whItem : warehouseProducts) {
-                    if (marketItem.getId() == whItem.getId()) {
-                        int needed = marketItem.getMaxCapacity() - marketItem.getCurrentStock();
-                        int toTransfer = Math.min(needed, whItem.getTotalStock());
+        for (final Product marketItem : marketProducts) {
+            final double productPercentageToRefill = (double) marketItem.getCurrentStock() / marketItem.getMaxCapacity();
+            double PERCENTAGE_REFILL = 2.0;
+            if (productPercentageToRefill < PERCENTAGE_REFILL) {
+                for (final WarehouseProduct warehouseItem : warehouseProducts) {
+                    if (marketItem.getId() == warehouseItem.getId()) {
+                        final int needed = marketItem.getMaxCapacity() - marketItem.getCurrentStock();
+                        final int toTransfer = Math.min(needed, warehouseItem.getTotalStock());
 
                         if (toTransfer > 0) {
                             marketItem.setCurrentStock(marketItem.getCurrentStock() + toTransfer);
-                            whItem.setTotalStock(whItem.getTotalStock() - toTransfer);
+                            warehouseItem.setTotalStock(warehouseItem.getTotalStock() - toTransfer);
                             return true;
                         }
                     }
@@ -39,12 +43,19 @@ public class StoreImplements implements Store {
     }
 
     private List<Product> getProductsFromCSV() {
-        List<Product> productList = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("data/market_stock.csv"))) {
+        final List<Product> productList = new ArrayList<>();
+        try (final BufferedReader reader = new BufferedReader(new FileReader("data/market_stock.csv"))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(";");
-                productList.add(new Product(parts));
+                final String[] parts = line.split(";");
+                productList.add(Product.builder()
+                        .id(Integer.parseInt(parts[0]))
+                        .name(parts[1])
+                        .price(Double.parseDouble(parts[2]))
+                        .currentStock(Integer.parseInt(parts[3]))
+                        .maxCapacity(Integer.parseInt(parts[4]))
+                        .build()
+                );
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -54,12 +65,17 @@ public class StoreImplements implements Store {
     }
 
     private List<WarehouseProduct> getWarehouseProductsFromCSV() {
-        List<WarehouseProduct> productList = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("data/warehouse.csv"))) {
+        final List<WarehouseProduct> productList = new ArrayList<>();
+        try (final BufferedReader reader = new BufferedReader(new FileReader("data/warehouse.csv"))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(";");
-                productList.add(new WarehouseProduct(parts));
+                final String[] parts = line.split(";");
+                productList.add(WarehouseProduct.builder()
+                        .id(Integer.parseInt(parts[0]))
+                        .name(parts[0])
+                        .totalStock(Integer.parseInt(parts[0]))
+                        .build()
+                );
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -69,8 +85,8 @@ public class StoreImplements implements Store {
     }
 
     private void writeWarehouseCSV(List<WarehouseProduct> warehouseProductList) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/warehouse.csv"))) {
-            for (WarehouseProduct warehouseProduct : warehouseProductList) {
+        try (final BufferedWriter writer = new BufferedWriter(new FileWriter("data/warehouse.csv"))) {
+            for (final WarehouseProduct warehouseProduct : warehouseProductList) {
                 writer.write(warehouseProduct.toString());
                 writer.flush();
             }
@@ -80,8 +96,8 @@ public class StoreImplements implements Store {
     }
 
     private void writeMarketCSV(List<Product> productList) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/market_stock.csv"))) {
-            for (Product product : productList) {
+        try (final BufferedWriter writer = new BufferedWriter(new FileWriter("data/market_stock.csv"))) {
+            for (final Product product : productList) {
                 writer.write(product.toString());
                 writer.newLine();
             }

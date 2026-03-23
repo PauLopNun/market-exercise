@@ -34,6 +34,27 @@ public class User {
     public void setId(String id) {
         this.id = id;
     }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if(this == o)
+            return true;
+        if (o == null)
+            return false;
+        if (o.getClass() != this.getClass())
+            return  false;
+
+        User user = (User) o;
+        return this.id.equals(user.id);
+
+    }
+
+    //Ni idea
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }
 
 

@@ -1,4 +1,5 @@
 import com.sts.shared.model.CSVReader;
+import com.sts.shared.model.User;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Array;
@@ -19,6 +20,14 @@ public class CSVReaderTest {
         List<String[]> result = csvReader.getData("./data/users.csv", ",");
 
         assertThat(dataExpected.equals(result));
+
+    }
+
+    @Test
+    void testUserNotFoundException(){
+        User userExpected = new User("id2","name",200);
+        User result = csvReader.getUser("id2");
+        assertThat( userExpected ).isEqualTo( result );
 
     }
 }

@@ -1,10 +1,11 @@
 package com.sts.audit;
 
 public enum EventType {
-    USER_LOGGED_IN,
+    REFILL,
+    PAYMENT,
+    LIFO,
     ITEM_PURCHASED,
     ITEM_DROPPED,
-    PAYMENT_ACCEPTED,
-    PAYMENT_DENIED,
-    MARKET_REFILLED
+    MARKET_REFILLED,
+    LOGIN
 }

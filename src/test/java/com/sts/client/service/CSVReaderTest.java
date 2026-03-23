@@ -13,6 +13,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CSVReaderTest {
 
@@ -43,5 +45,13 @@ public class CSVReaderTest {
     void shouldThrowWhenUserDoesNotExist() {
         assertThatThrownBy(() -> CSVReader.getUser( "does-not-exist" ))
                 .isInstanceOf( UserNotFoundException.class );
+    }
+
+    @Test
+    void getDataFailed() {
+        List<String[]> result = CSVReader.getData("", ",");
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
     }
 }

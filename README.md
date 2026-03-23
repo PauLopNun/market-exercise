@@ -4,18 +4,20 @@ Pure Java 17 · No frameworks · CSV persistence
 ## Structure
 ```
 src/
-└── com/sts/
-    ├── shared/         ← POJOs and AuditLogger (ALL teams use this)
-    │   ├── model/
-    │   └── audit/
-    ├── market/         ← MARKET team
-    │   ├── model/
-    │   ├── repository/
-    │   └── service/
-    ├── client/         ← CLIENT team
-    ├── payment/        ← PAYMENT team
-    ├── store/          ← STORE team
-    └── audit/          ← AUDIT team
+├── main/java/com/sts/
+│   ├── Main.java
+│   ├── shared/         ← POJOs and AuditLogger (ALL teams use this)
+│   │   ├── model/
+│   │   └── audit/
+│   ├── market/         ← MARKET team
+│   │   ├── model/
+│   │   ├── repository/
+│   │   └── service/
+│   ├── client/         ← CLIENT team
+│   ├── payment/        ← PAYMENT team
+│   ├── store/          ← STORE team
+│   └── audit/          ← AUDIT team
+└── test/java/com/sts/  ← JUnit tests por modulo
 data/                   ← shared CSV files
 ```
 

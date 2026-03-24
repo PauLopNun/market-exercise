@@ -7,10 +7,14 @@ import java.util.List;
 
 public class Logs {
 
-    public List<String> formatLogs() {
-        List<String> Logs = new ArrayList<>();
+    private String filePath;
 
-        String filePath = "data/audit_log.csv";
+    public Logs(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public List<String> formatLogs() {
+        List<String> logs = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
@@ -22,25 +26,22 @@ public class Logs {
                     continue;
                 }
 
-                String[] parts = line.split(",");
+                String[] parts = line.split(",", 5);
                 if (parts.length < 5) continue;
 
                 String formatted = formatLog(parts[0], parts[1], parts[2], parts[3], parts[4]);
-                Logs.add(formatted);
+                logs.add(formatted);
             }
 
         } catch (Exception e) {
             throw new RuntimeException("Error leyendo logs", e);
         }
 
-        for (String log : Logs) {
-            System.out.println(log);
-        }
-
-        return Logs;
+        return logs;
     }
 
     private String formatLog(String timestamp, String module, String action, String status, String details) {
-        return String.format("[%s] %s | %s | %s -> %s", status, timestamp, module, action, details);
+        return String.format("[%s] %s | %s -> %s",
+                status, timestamp, action, details.replace("\"", ""));
     }
 }

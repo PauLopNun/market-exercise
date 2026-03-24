@@ -45,7 +45,7 @@ public class AuditService implements AuditLogger {
                 for (String part : details.split("\\|")) {
                     part = part.trim();
                     if (part.startsWith("Total:")) {
-                        String value = part.replace("Total:", "").replace("€", "").trim();
+                        String value = part.replace("Total:", "").replaceAll("[^0-9.]", "").trim();
                         total += Double.parseDouble(value);
                     }
                 }

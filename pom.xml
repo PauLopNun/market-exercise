@@ -117,6 +117,7 @@
                         <configuration>
                             <excludes>
                                 <exclude>com/sts/Main.class</exclude>
+                                <exclude>com/sts/CLI.class</exclude>
                                 <exclude>com/sts/store/Product.class</exclude>
                                 <exclude>com/sts/store/Store.class</exclude>
                                 <exclude>com/sts/store/StoreImplements.class</exclude>

@@ -12,4 +12,5 @@ com\sts\store\StoreService.class
 com\sts\market\repository\CartRepository.class
 com\sts\store\WarehouseProduct.class
 com\sts\shared\model\User.class
+com\sts\CLI.class
 com\sts\Main.class

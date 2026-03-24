@@ -10,6 +10,48 @@
 
 ---
 
+## Quick Start
+
+### Terminal (Windows/Linux/Mac)
+```bash
+mvn clean compile
+java -cp target/classes com.sts.Main
+```
+
+### IDE (IntelliJ IDEA)
+1. Open project
+2. Right-click `Main.java` → Run
+3. Type commands in console
+
+### Commands
+```
+LOGIN <user_id>     - Login: LOGIN Alice
+BUY <id> <qty>      - Buy: BUY 1 2
+DROP <id> <qty>     - Drop: DROP 1 1
+CHECKOUT            - Pay & replenish
+LOGS                - Audit log
+HELP                - Show commands
+EXIT                - Exit & report
+```
+
+### Run Tests
+```bash
+mvn clean test
+```
+
+### Test Scripts
+**Windows:**
+```bash
+test.bat
+```
+
+**Linux/Mac:**
+```bash
+bash test.sh
+```
+
+---
+
 ## Project Structure
 
 ```
@@ -115,10 +157,6 @@ All code follows **Robert C. Martin's Clean Code** principles:
 | DRY (Don't Repeat Yourself) | IMPLEMENTED | CSV parsing logic abstracted to repositories |
 | KISS (Keep It Simple) | IMPLEMENTED | No frameworks, pure Java logic |
 | Method Names | IMPLEMENTED | Consistent pattern: `read*()`, `write*()`, `find*()`, `save*()` |
-
-See: [CLEAN_CODE_STANDARDS.md](./CLEAN_CODE_STANDARDS.md)
-
-
 
 Every push and pull request to `main` or `develop` runs automatically:
 

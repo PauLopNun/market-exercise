@@ -1,7 +1,1 @@
-package com.sts.store;
-
-import java.util.List;
-
-public interface Store {
-    void refillProducts();
-}
+// DEPRECATED: This file has been removed. Use com.sts.store.StoreService instead.

@@ -74,7 +74,6 @@ class PaymentServiceTest {
     void shouldDeductBudgetAfterCheckout() throws IOException {
         paymentService.checkout("u1");
         User user = paymentService.findUser("u1");
-        // 2*1.20 + 1*0.80 = 3.20
         assertEquals(50.0 - 3.20, user.getBudget(), 0.01);
     }
 
@@ -93,13 +92,13 @@ class PaymentServiceTest {
 
     @Test
     void shouldRemoveItemsLIFO_whenInsufficientFunds() throws IOException {
-        // Bob has 5.0, cart has u1 items so set up Bob's cart
+
         Files.writeString(cartFile,
                 "userId,productId,quantity\n" +
                 "u2,P001,2\n" +
                 "u2,P002,3\n"
         );
-        // Total: 2*1.20 + 3*0.80 = 2.40 + 2.40 = 4.80 — fits in 5.0
+
         boolean result = paymentService.checkout("u2");
         assertTrue(result);
     }
@@ -191,7 +190,7 @@ class PaymentServiceTest {
 
     @Test
     void shouldRemoveMultipleItems_whenLIFORefundNeeded() throws IOException {
-        // Create user with very low budget who needs LIFO removal
+
         Files.writeString(usersFile,
                 "id,name,budget\n" +
                 "u1,Alice,1.50\n" +
@@ -202,19 +201,13 @@ class PaymentServiceTest {
                 "u1,P001,2\n" +
                 "u1,P002,1\n"
         );
-        // Total: 2*1.20 + 1*0.80 = 3.20, but budget is 1.50
-        // Should remove P002 (LIFO), leaving 2*1.20 = 2.40 > 1.50
-        // Will remove more items but eventually cannot fit even P001 fully
+
         boolean result = paymentService.checkout("u1");
-        // After LIFO removes last items, might still fail or succeed depending on what fits
-        // Actually, with sufficient LIFO removals it could succeed with just 1 item
-        // Let's just verify the method completes
         assertNotNull(result);
     }
 
     @Test
     void shouldCheckoutSuccessfully_afterPartialLIFORemoval() throws IOException {
-        // User with budget just enough for one item after LIFO
         Files.writeString(usersFile,
                 "id,name,budget\n" +
                 "u1,Alice,1.30\n" +
@@ -225,8 +218,6 @@ class PaymentServiceTest {
                 "u1,P001,1\n" +
                 "u1,P002,1\n"
         );
-        // Total: 1*1.20 + 1*0.80 = 2.0, but budget is 1.30
-        // After LIFO removal of P002: 1*1.20 = 1.20 — fits in 1.30
         boolean result = paymentService.checkout("u1");
         assertTrue(result);
     }
@@ -249,7 +240,6 @@ class PaymentServiceTest {
         List<Product> stock = paymentService.readStock();
         
         double total = paymentService.calculateTotal(cart, stock);
-        // 2*1.20 + 3*0.80 = 2.40 + 2.40 = 4.80
         assertEquals(4.80, total, 0.01);
     }
 
@@ -304,8 +294,6 @@ class PaymentServiceTest {
 
     @Test
     void shouldRemoveItemsLIFO_untilBudgetFits() throws IOException {
-        // Create scenario where LIFO removal is absolutely necessary
-        // User with budget 2.00, cart has items totaling 4.80
         Files.writeString(usersFile,
                 "id,name,budget\n" +
                 "u1,Alice,2.00\n"
@@ -315,8 +303,6 @@ class PaymentServiceTest {
                 "u1,P001,1\n" +
                 "u1,P002,2\n"
         );
-        // Total: 1*1.20 + 2*0.80 = 2.80 > 2.00 budget
-        // After LIFO removal of P002: 1*1.20 = 1.20 < 2.00 — should succeed
         boolean result = paymentService.checkout("u1");
         assertTrue(result);
         
@@ -326,7 +312,6 @@ class PaymentServiceTest {
 
     @Test
     void shouldCalculateTotalWithMissingProduct() throws IOException {
-        // Product in cart not in stock
         Files.writeString(cartFile,
                 "userId,productId,quantity\n" +
                 "u1,P999,1\n"
@@ -335,13 +320,11 @@ class PaymentServiceTest {
         List<Product> stock = paymentService.readStock();
         
         double total = paymentService.calculateTotal(cart, stock);
-        // Product P999 not in stock, so total should be 0
         assertEquals(0.0, total, 0.01);
     }
 
     @Test
     void shouldRemoveLIFOItems_WhenTotalExceedsBudget() throws IOException {
-        // Directly test LIFO removal by using lists
         List<CartEntry> cart = List.of(
             new CartEntry("u1", "P001", 1),
             new CartEntry("u1", "P002", 2)
@@ -351,21 +334,16 @@ class PaymentServiceTest {
         List<Product> stock = paymentService.readStock();
         double total = paymentService.calculateTotal(cart, stock);
         
-        // Initial: 1*1.20 + 2*0.80 = 2.80
         assertEquals(2.80, total, 0.01);
         
-        // Budget: 1.30 (from test setup Alice has 50.0, but we'll check direct removal)
-        // Remove one item (LIFO - remove last)
         cart.remove(cart.size() - 1);
         total = paymentService.calculateTotal(cart, stock);
         
-        // After remove: 1*1.20 = 1.20
         assertEquals(1.20, total, 0.01);
     }
 
     @Test
     void shouldExecuteLIFORemovalMultipleTimes() throws IOException {
-        // Create another service instance with low budget user
         AuditService auditService2 = new AuditService(tempDir.resolve("audit_log_lifo.csv").toString());
         Files.writeString(tempDir.resolve("audit_log_lifo.csv"), "timestamp,module,action,status,details\n");
         MarketStockRepository stockRepo2 = new MarketStockRepository(tempDir.resolve("market_stock_lifo.csv").toString());
@@ -378,7 +356,6 @@ class PaymentServiceTest {
                 marketService2, auditService2
         );
 
-        // Setup: Budget exactly fits after LIFO removal
         Files.writeString(tempDir.resolve("users_lifo.csv"),
                 "id,name,budget\n" +
                 "u3,Charlie,1.25\n"
@@ -393,16 +370,13 @@ class PaymentServiceTest {
                 "u3,P001,1\n" +
                 "u3,P002,1\n"
         );
-        // Total: 1*1.20 + 1*0.80 = 2.00 > 1.25 budget
-        // After LIFO removes P002: 1*1.20 = 1.20 < 1.25 ✓ fits
-        
+
         boolean result = paymentService2.checkout("u3");
         assertTrue(result);
     }
 
     @Test
     void shouldFailCheckoutWhenAllItemsNeedRemovalButStillOverBudget() throws IOException {
-        // Budget smaller than any single item - cart empty but still over budget
         Files.writeString(usersFile,
                 "id,name,budget\n" +
                 "u1,Alice,0.50\n" +
@@ -412,15 +386,12 @@ class PaymentServiceTest {
                 "userId,productId,quantity\n" +
                 "u1,P001,1\n"
         );
-        // Total: 1*1.20 = 1.20 but budget is 0.50
-        // After removing all items (cart empty), total = 0.0 which fits 0.50, so should succeed
         boolean result = paymentService.checkout("u1");
         assertTrue(result);
     }
 
     @Test
     void shouldCheckoutRemoveLIFOButNotEnough() throws IOException {
-        // Scenario where we can remove all items and still fit
         Files.writeString(usersFile,
                 "id,name,budget\n" +
                 "u4,Dave,0.30\n"
@@ -436,7 +407,6 @@ class PaymentServiceTest {
 
     @Test
     void shouldHandleLIFORemovalWithMultipleItems() throws IOException {
-        // Scenario with 2 items in cart, need to remove last one
         Files.writeString(usersFile,
                 "id,name,budget\n" +
                 "u5,Eve,1.30\n"
@@ -446,8 +416,7 @@ class PaymentServiceTest {
                 "u5,P001,1\n" +
                 "u5,P002,1\n"
         );
-        // Total: 1*1.20 + 1*0.80 = 2.00 > 1.30
-        // After LIFO removes P002 (last): 1*1.20 = 1.20 < 1.30 ✓
+
         boolean result = paymentService.checkout("u5");
         assertTrue(result);
         User updated = paymentService.findUser("u5");
@@ -456,7 +425,6 @@ class PaymentServiceTest {
 
     @Test
     void shouldReadCartWithBlankLines() throws IOException {
-        // Add blank lines to cart file
         Files.writeString(cartFile,
                 "userId,productId,quantity\n" +
                 "\n" +
@@ -470,7 +438,6 @@ class PaymentServiceTest {
 
     @Test
     void shouldReadStockWithBlankLines() throws IOException {
-        // Add blank lines to stock file
         Files.writeString(stockFile,
                 "productId,name,price,current_stock,max_capacity\n" +
                 "\n" +
@@ -548,7 +515,6 @@ class PaymentServiceTest {
         List<Product> stock = paymentService.readStock();
         
         double total = paymentService.calculateTotal(cart, stock);
-        // Only P001 should be counted: 1*1.20 = 1.20
         assertEquals(1.20, total, 0.01);
     }
 
@@ -589,14 +555,11 @@ class PaymentServiceTest {
     void shouldSaveUserWithOnlyHeaderLine() throws IOException {
         Files.writeString(usersFile, "id,name,budget\n");
         User newUser = new User("u1", "Alice", 50.0);
-        // This will try to update, but no matching user in file
         paymentService.saveUser(newUser);
-        // Just verify no exception
     }
 
     @Test
     void shouldCheckoutWithAllBranchesInLIFORemoval() throws IOException {
-        // User with budget that requires LIFO removal of multiple items
         Files.writeString(usersFile,
                 "id,name,budget\n" +
                 "u6,Frank,1.50\n"
@@ -606,16 +569,12 @@ class PaymentServiceTest {
                 "u6,P001,2\n" +
                 "u6,P002,1\n"
         );
-        // Total: 2*1.20 + 1*0.80 = 3.20 > 1.50
-        // After LIFO removes P002: 2*1.20 = 2.40 > 1.50 (still over)
-        // After LIFO removes P001: 0.0 < 1.50 ✓
         boolean result = paymentService.checkout("u6");
         assertTrue(result);
     }
 
     @Test
     void shouldCheckoutCalculateTotalMultipleTimes() throws IOException {
-        // This tests the calculateTotal call inside checkout loop
         Files.writeString(usersFile,
                 "id,name,budget\n" +
                 "u7,Grace,1.20\n"
@@ -625,8 +584,6 @@ class PaymentServiceTest {
                 "u7,P001,1\n" +
                 "u7,P002,1\n"
         );
-        // Total: 1*1.20 + 1*0.80 = 2.00 > 1.20
-        // After LIFO: removes P002, total = 1.20 = 1.20 ✓
         boolean result = paymentService.checkout("u7");
         assertTrue(result);
         User updated = paymentService.findUser("u7");
@@ -635,8 +592,6 @@ class PaymentServiceTest {
 
     @Test
     void shouldCheckoutTerminateLoopWhenCartEmpty() throws IOException {
-        // Ensure the while loop terminates when cart becomes empty
-        // not just when total fits budget
         Files.writeString(usersFile,
                 "id,name,budget\n" +
                 "u8,Hank,0.50\n"
@@ -646,9 +601,7 @@ class PaymentServiceTest {
                 "u8,P001,1\n" +
                 "u8,P002,1\n"
         );
-        // Total: 1*1.20 + 1*0.80 = 2.00 > 0.50
-        // After LIFO removes P002: 1*1.20 = 1.20 > 0.50 (still over, continue loop)
-        // After LIFO removes P001: 0.0 < 0.50 ✓
+
         boolean result = paymentService.checkout("u8");
         assertTrue(result);
         User updated = paymentService.findUser("u8");
@@ -661,10 +614,12 @@ class PaymentServiceTest {
                 "id,name,budget\n" +
                 "u9,Iris,1.20\n"
         );
+
         Files.writeString(cartFile,
                 "userId,productId,quantity\n" +
                 "u9,P001,1\n"
         );
+
         boolean result = paymentService.checkout("u9");
         assertTrue(result);
         User updated = paymentService.findUser("u9");
@@ -673,33 +628,35 @@ class PaymentServiceTest {
 
     @Test
     void shouldCheckoutRemoveBothItemsButCartBecomesEmpty() throws IOException {
-        // Test case where while loop exits because cart.isEmpty() == true
+
         Files.writeString(usersFile,
                 "id,name,budget\n" +
                 "u10,Jack,0.10\n"
         );
+
         Files.writeString(cartFile,
                 "userId,productId,quantity\n" +
                 "u10,P001,1\n" +
                 "u10,P002,1\n"
         );
-        // Will remove both, cart empty, total = 0.0 fits 0.10
+
         boolean result = paymentService.checkout("u10");
         assertTrue(result);
     }
 
     @Test
     void shouldCheckoutExitLoopWhenBudgetMatches() throws IOException {
-        // Test where loop exits because total <= budget (first condition fails)
+
         Files.writeString(usersFile,
                 "id,name,budget\n" +
                 "u11,Kate,1.20\n"
         );
+
         Files.writeString(cartFile,
                 "userId,productId,quantity\n" +
                 "u11,P001,1\n"
         );
-        // Total = 1.20 = 1.20 (equal), loop condition is false from start
+
         boolean result = paymentService.checkout("u11");
         assertTrue(result);
         User updated = paymentService.findUser("u11");
@@ -708,7 +665,6 @@ class PaymentServiceTest {
 
     @Test
     void shouldCheckoutWithBudgetGreaterThanTotal() throws IOException {
-        // Test where loop never executes because total < budget from start
         Files.writeString(usersFile,
                 "id,name,budget\n" +
                 "u12,Leo,5.00\n"
@@ -717,7 +673,7 @@ class PaymentServiceTest {
                 "userId,productId,quantity\n" +
                 "u12,P001,1\n"
         );
-        // Total = 1.20 < 5.00, loop never runs
+
         boolean result = paymentService.checkout("u12");
         assertTrue(result);
         User updated = paymentService.findUser("u12");
@@ -726,7 +682,6 @@ class PaymentServiceTest {
 
     @Test
     void shouldCheckoutNeverEnterLoopWhenCartIsEmpty() throws IOException {
-        // Test where loop never runs because cart is empty from start
         Files.writeString(usersFile,
                 "id,name,budget\n" +
                 "u13,Mara,10.00\n"

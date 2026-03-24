@@ -1,0 +1,214 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ClientService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.sts.client</a>
+</div>
+
+<h1>Coverage Summary for Class: ClientService (com.sts.client)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ClientService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (40/40)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.sts.client;
+&nbsp;
+&nbsp;import com.sts.audit.AuditService;
+&nbsp;import com.sts.market.service.MarketService;
+&nbsp;import com.sts.payment.PaymentService;
+&nbsp;import com.sts.shared.model.User;
+&nbsp;
+&nbsp;import java.io.IOException;
+&nbsp;import java.io.InputStream;
+&nbsp;import java.io.PrintStream;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Scanner;
+&nbsp;
+&nbsp;public class ClientService {
+&nbsp;
+&nbsp;    private final UserRepository userRepository;
+&nbsp;    private final MarketService marketService;
+&nbsp;    private final PaymentService paymentService;
+&nbsp;    private final AuditService auditService;
+&nbsp;    private final PrintStream out;
+&nbsp;
+&nbsp;    private User currentUser;
+&nbsp;
+&nbsp;    public ClientService(UserRepository userRepository, MarketService marketService,
+&nbsp;                         PaymentService paymentService, AuditService auditService,
+<b class="fc">&nbsp;                         PrintStream out) {</b>
+<b class="fc">&nbsp;        this.userRepository = userRepository;</b>
+<b class="fc">&nbsp;        this.marketService = marketService;</b>
+<b class="fc">&nbsp;        this.paymentService = paymentService;</b>
+<b class="fc">&nbsp;        this.auditService = auditService;</b>
+<b class="fc">&nbsp;        this.out = out;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean login(String input) throws IOException {
+<b class="fc">&nbsp;        User user = userRepository.findByIdOrName(input);</b>
+<b class="fc">&nbsp;        if (user == null) {</b>
+<b class="fc">&nbsp;            out.println(&quot;User not found: &quot; + input);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        currentUser = user;</b>
+<b class="fc">&nbsp;        out.println(&quot;Welcome, &quot; + currentUser.getName() + &quot;! Budget: &quot; + currentUser.getBudget() + &quot;€&quot;);</b>
+<b class="fc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean buy(String productId, int qty) throws IOException {
+<b class="fc">&nbsp;        requireLogin();</b>
+<b class="fc">&nbsp;        boolean result = marketService.buy(currentUser.getId(), productId, qty);</b>
+<b class="fc">&nbsp;        if (result) {</b>
+<b class="fc">&nbsp;            out.println(&quot;Added to cart: &quot; + productId + &quot; x&quot; + qty);</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            out.println(&quot;Cannot buy: insufficient stock for &quot; + productId);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void drop(String productId, int qty) throws IOException {
+<b class="fc">&nbsp;        requireLogin();</b>
+<b class="fc">&nbsp;        marketService.drop(currentUser.getId(), productId, qty);</b>
+<b class="fc">&nbsp;        out.println(&quot;Dropped: &quot; + productId + &quot; x&quot; + qty);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean checkout() throws IOException {
+<b class="fc">&nbsp;        requireLogin();</b>
+<b class="fc">&nbsp;        boolean result = paymentService.checkout(currentUser.getId());</b>
+<b class="fc">&nbsp;        if (result) {</b>
+<b class="fc">&nbsp;            out.println(&quot;Checkout successful!&quot;);</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            out.println(&quot;Checkout failed: insufficient funds.&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void logs() throws IOException {
+<b class="fc">&nbsp;        requireLogin();</b>
+<b class="fc">&nbsp;        List&lt;String[]&gt; entries = auditService.readAll();</b>
+<b class="fc">&nbsp;        if (entries.isEmpty()) {</b>
+<b class="fc">&nbsp;            out.println(&quot;No logs found.&quot;);</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            entries.forEach(e -&gt; out.println(String.join(&quot; | &quot;, e)));</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public void exit() throws IOException {
+<b class="fc">&nbsp;        out.println(&quot;--- Daily Report ---&quot;);</b>
+<b class="fc">&nbsp;        out.println(&quot;Revenue: &quot; + auditService.getTotalRevenue() + &quot;€&quot;);</b>
+<b class="fc">&nbsp;        out.println(&quot;Top products: &quot; + auditService.getTop3Products());</b>
+<b class="fc">&nbsp;        out.println(&quot;Users over budget: &quot; + auditService.getUsersWhoExceededBudget());</b>
+<b class="fc">&nbsp;        out.println(&quot;Goodbye!&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public User getCurrentUser() {
+<b class="fc">&nbsp;        return currentUser;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void requireLogin() {
+<b class="fc">&nbsp;        if (currentUser == null) throw new IllegalStateException(&quot;Not logged in&quot;);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-03-23 23:16</div>
+</div>
+</body>
+</html>

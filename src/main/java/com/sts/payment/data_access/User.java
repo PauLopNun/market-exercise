@@ -1,8 +1,15 @@
 package com.sts.payment.data_access;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class User {
 
+    @Getter
     private String id, name;
+
+    @Setter
+    @Getter
     private double budget;
 
     public User(String id, String name, double budget){
@@ -11,15 +18,4 @@ public class User {
         this.budget = budget;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public double getBudget() {
-        return budget;
-    }
 }

@@ -112,6 +112,9 @@ public class PaymentService {
     private double deductPaymentFromBudget(double totalPrice) {
         double newBudget = user.getBudget() - totalPrice;
         dataGateway.updateBalance(user.getId(), newBudget);
+
+        user.setBudget(newBudget);
+
         return newBudget;
     }
     
